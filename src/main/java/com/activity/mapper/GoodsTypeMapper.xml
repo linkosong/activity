@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.activity.mapper.GoodsTypeMapper">
+<resultMap id="BaseResultMap" type="com.activity.pojo.GoodsType" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="pid" property="pid" jdbcType="BIGINT" />
+    <result column="level" property="level" jdbcType="BIGINT" />
+    <result column="level_name" property="levelName" jdbcType="VARCHAR" />
+    <result column="level_pic_url" property="levelPicUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, pid, level, level_name, level_pic_url
+  </sql>
+  
+    <select id="getTypeAll" resultMap="BaseResultMap">
+    	select * from goods_type
+    </select>
+   
+   <!--取得单级类目 -->
+    <select id="getTypeSingle" resultMap="BaseResultMap" parameterType="com.activity.pojo.GoodsType">
+    	select 
+		<include refid="Base_Column_List"></include>
+ 		from goods_type 
+    	<where>
+		<!--0:下架1:上架 -->
+		<if test="level != null and level != ''">
+			and level=#{level}
+		</if>
+		<if test="pid != null and pid != ''">
+			and pid=#{pid}
+		</if>
+	</where>
+     order by pid,id
+    	
+    	
+    </select>
+    
+	<!-- 增加类目 -->
+   <insert id ="insert" parameterType="com.activity.pojo.GoodsType">
+    insert into goods_type (pid, level , level_name ,level_pic_url)
+    	values(#{pid},#{level},#{levelName},#{levelPicUrl})
+   </insert> 
+</mapper>

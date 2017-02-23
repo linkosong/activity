@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="device=device-width,initoal-scale=1">
+<title>商品列表</title>
+<link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css" type="text/css"></link>
+<script type="text/javascript" src="../../bootstrap/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../bootstrap/js/bootstrap.min.js"></script>
+<iframe id="frame_content" src="nav.html" scrolling="no" frameborder="0"  width="100%" height="50px"></iframe> 
+</head>
+<script type="text/javascript">
+	var param;
+	function  GetRequest() {
+	    var url = decodeURI(location.search);
+	    var theRequest = new Object();
+	    var serarch="{";
+	    if (url.indexOf("?") != -1) {
+	        var str = url.substr(1);
+	        var strs= new Array();
+	         strs = str.split('&');
+	         for (var i = 0; i < strs.length; i++) {
+	        	 var strParam= new Array();
+		         strParam =strs[i].split('=');
+		       	 var key=strParam[0];
+	        	 var value=strParam[1];
+	        	 serarch+=key+":"+"'"+value+"',";
+			 }
+	         //去除最后一个，号
+	        serarch=serarch.substring(0, serarch.length-1);
+	        serarch+="}";
+	 	    param= eval("("+serarch+")");
+	    }
+	   
+	}
+
+
+ 		$(function(){
+ 			GetRequest();
+			   $.ajax({
+				   url: "/activity/goods/getGoodsList",
+				 
+				   type: "post",
+				   dataType: "json",
+// 				   data : {
+// 					   id : id,
+// 					   typeId : typeId
+// 					},
+				   data:param,
+				   success: function(data){
+					   console.log(data);
+					    if(data.status==201){
+					    	goodsList += '没有相关商品， 请重新搜索！';
+					    }else{
+						   var goodsList="";
+						   for (var i = 0; i < data.data.length; i++) {
+							  
+							   goodsList += '<div class="col-md-4 col-sm-6 col-xs-4">'
+							    +'<a href="#" class="thumbnail" onclick="goodsDetailsShow('+data.data[i].goodsId+')">'
+							    +'<img class="img-responsive img-rounded" src="'+data.data[i].goodsMainPicUrl+'">'
+							    +'</a>'
+							    +'<h3>'+data.data[i].goodsName+'"</h3>'
+							    +'<input type="hidden" value="'+data.data[i].goodsId+'"/>'
+							    +'</div>';
+						   }
+						   $('#goodsList').html(goodsList);
+					    }
+					}
+				 });
+			   
+ 		});
+ 		
+ 		function goodsDetailsShow(goodsId){
+			 window.location.href="goodsDetails.html?goodsId="+goodsId;
+	  	}
+	   
+	   </script>
+<body style="background-color: pink">
+		<div class="container-fluid" style="padding: 50px; background-color: #fff;margin-top: -5px;">
+
+			<div id="goodsList" class="row" style="padding:50px;">
+			<!-- 		动态加载 -->
+<!-- 				<div class="col-md-4 col-sm-6 col-xs-4" style="border:1px solid red;height:300px">  col-md-* :表示的是所适应的屏幕 
+<!-- 				                                                                        col-后跟sm用于手机端， xs用于平板 ， md用于电脑 ，lg用于大屏幕   -->
+<!-- 				                                                                                                                                                                                                                        默认的是一行十二列 -->
+<!-- 				                                                                     -->
+<!-- 						 <a href="#" class="thumbnail"> -->
+<!-- 					      <img data-src="holder.js/100%x180" alt="..."> -->
+<!-- 					    </a> -->
+<!-- 				</div> -->
+
+			</div>
+		</div>
+	
+					</body>
+</html>

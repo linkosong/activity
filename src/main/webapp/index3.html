@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--  IE浏览器9.0全都支持 ，的核心配置意思是与bootstrap交融，正常使用  -->
+		<meta name="viewport" charset="utf-8"  content="device=device-width,initoal-scale=1"><!--  合适图框的大小，缩放的比例 ，支持pc端，移动端     -->
+		<title>Bootstrap基础入门</title>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css"></link>
+		<script type="text/javascript" src="bootstrap/js/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+	</head>
+<!-- 栅格系统 -->
+	<body style="padding: 50px; background-color: pink">
+		<div class="container" style="padding: 50px; background-color: #fff"> <!-- container : 表示的是文字或内容到边框的自动调整       -->
+
+			<div class="row">
+				<div class="col-md-4 " style="border:1px solid red;height:300px"> <!--  col-md-* :表示的是所适应的屏幕 
+				                                                                        col-后跟sm用于手机端， xs用于平板 ， md用于电脑 ，lg用于大屏幕  
+				                                                                                                                                                                                                                        默认的是一行十二列
+				                                                                     -->
+
+					中新网8月14日电
+					今日凌晨，演员王宝强在微博发声明，称已与妻子马蓉解除婚姻关系，因女方与王经纪人保持婚外不正当两性关系，引发热议。早5时许，马蓉在微博首度对此事发声，称“欲盖弥彰，善恶自有真相。不是不爆，时候未到”。似意有所指。
+					凌晨时分，王宝强在微博的一则离婚声明，犹如一颗重磅“炸弹”，在网上“炸开了锅”。
+					文中，王宝强说，自己无论在生活中、工作中、社会交往中，都是一个对婚姻与家庭、对朋友与团队、对工作与社会，尽责忠诚的人。提到离婚原因，他透露，“（妻子）马蓉与我经纪人宋喆的婚外不正当两性关系”。
+				</div>
+				<!-- 列偏移    col-md-offset-4  向右偏移4个栅     页面一共12个栅-->
+				<div class="col-md-4 col-md-offset-4" style="border:1px solid red;height:300px">
+					中新网8月14日电
+					今日凌晨，演员王宝强在微博发声明，称已与妻子马蓉解除婚姻关系，因女方与王经纪人保持婚外不正当两性关系，引发热议。早5时许，马蓉在微博首度对此事发声，称“欲盖弥彰，善恶自有真相。不是不爆，时候未到”。似意有所指。
+				<!-- 列嵌套	嵌套栅格系统  一个新的栅格布局12列-->
+					<div class="row">
+						<div class="col-md-6" style="height:150px;background-color:yellow;">左</div>
+						<div class="col-md-6"  style="height:150px;background-color:blue;">右</div>
+					</div>	
+				</div>
+			
+		</div>
+	</div>
+	
+	</body>
+	
+</html>

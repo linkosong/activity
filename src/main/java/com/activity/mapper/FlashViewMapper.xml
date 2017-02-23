@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.activity.mapper.FlashViewMapper" >
+ <resultMap id="BaseResultMap" type="com.activity.pojo.FlashView" >
+    <id column="flash_view_id" property="flashViewId" jdbcType="INTEGER" />
+    <result column="sequence_number" property="sequenceNumber" jdbcType="INTEGER" />
+    <result column="view_up_url" property="viewUpUrl" jdbcType="VARCHAR" />
+    <result column="view_down_url" property="viewDownUrl" jdbcType="VARCHAR" />
+    <result column="jump_url" property="jumpUrl" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="delete_flag" property="deleteFlag" jdbcType="VARCHAR" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="operation_time" property="operationTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+   <update id="updateByflashViewId" parameterType="com.activity.pojo.FlashView" >
+    update flash_view
+    set 
+      delete_flag = #{deleteFlag,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      operation_time = #{operationTime,jdbcType=TIMESTAMP}
+    where flash_view_id = #{flashViewId,jdbcType=INTEGER}
+  </update>
+  
+<!--   统计有几个轮播图是开启状态 -->
+    <update id="countOpenView" >
+    select count(1) 
+    from  flash_view
+    where delete_flag = '0'
+  </update>
+  
+<!--   取得轮播图 -->
+ <select id="getFlashView" resultMap="BaseResultMap">
+ 	select * from flash_view where delete_flag = '0'
+ </select>
+ 
+ 
+ <insert id="insert" parameterType="com.activity.pojo.FlashView" >
+    insert into flash_view (flash_view_id, sequence_number, view_up_url, 
+      view_down_url, jump_url, create_time, 
+      delete_flag, operator, operation_time
+      )
+    values (#{flashViewId,jdbcType=INTEGER}, #{sequenceNumber,jdbcType=INTEGER}, #{viewUpUrl,jdbcType=VARCHAR}, 
+      #{viewDownUrl,jdbcType=VARCHAR}, #{jumpUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{deleteFlag,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.activity.pojo.FlashView" >
+    update flash_view
+    set sequence_number = #{sequenceNumber,jdbcType=INTEGER},
+      view_up_url = #{viewUpUrl,jdbcType=VARCHAR},
+      view_down_url = #{viewDownUrl,jdbcType=VARCHAR},
+      jump_url = #{jumpUrl,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      delete_flag = #{deleteFlag,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      operation_time = #{operationTime,jdbcType=TIMESTAMP}
+    where flash_view_id = #{flashViewId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

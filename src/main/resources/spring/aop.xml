@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+<!-- 三种切面类型 切面可以分为三类：一般切面、切点切面和引介切面。 -->
+	<context:component-scan base-package="com.activity.aspect"></context:component-scan>
+	<!--  Spring使用org.springframework.aop.Advisor接口表示切面的概念，一个切面同时包含横切代码和连接点信息。 -->
+	<!-- 	静态入织 赶紧 -->
+	<!--     1）Advisor：代表一般切面，它仅包含一个Advice。由于Advice包含了横切代码和连接点的信息，所以Advice本身就是一个简单的切面，
+				只不过它代表的横切的连接点是所有目标类的所有方法，因为这个横切面太宽泛，所以一般不会直接使用。 -->
+				
+<!-- 3、静态普通方法名匹配切面 -->
+<!-- 	Waiter业务类 -->
+	<bean id="waiterTarget" class="com.activity.aspect.Waiter"/>
+<!--     Seller业务类 -->
+    <bean id="sellerTarget" class="com.activity.aspect.Seller"/>
+<!-- GreetingBeforeAdvice前置增强实现类 -->
+    <bean id="greetingAdvice" class="com.activity.aspect.GreetingBeforeAdvice"/>
+    <bean id="greetingAdvisor" class="com.activity.aspect.GreetingAdvisor" p:advice-ref="greetingAdvice"/>
+<!--     GreetingAdvisor切面实现类 -->
+    <bean id="parent" abstract="true" class="org.springframework.aop.framework.ProxyFactoryBean"
+          p:interceptorNames="greetingAdvisor"
+          p:proxyTargetClass="true"/>
+    <bean id="waiter" parent="parent" p:target-ref="waiterTarget"/>
+    <bean id="seller" parent="parent" p:target-ref="sellerTarget"/>
+<!--     执行顺序：GreetingBeforeAdvice前置增强实现类 >GreetingAdvisor >业务类 -->
+    
+
+<!-- 4、静态正则表达式方法匹配切面 -->
+<!--     使用正则表达式进行匹配描述能够灵活匹配目标方法。 -->
+<bean id="regexpAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor"
+          p:advice-ref="greetingAdvice">
+        <property name="patterns">
+            <list>
+                <value>.*greet.*</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="waiter1" class="org.springframework.aop.framework.ProxyFactoryBean"
+          p:interceptorNames="regexpAdvisor"
+          p:target-ref="waiterTarget"
+          p:proxyTargetClass="true"/>
+          
+          
+          
+    
+    <!-- 2）PointcutAdvisor：代表具有切点的切面，它包含Advice和Pointcut两个类，这样，我们就可以通过类、方法名以及方法方位等信息灵活地定义切面的连接点，提供更具适用性的切面。-->
+	<bean id="dynamicAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+       <property name="pointcut">
+           <bean class="com.activity.aspect.GreetingDynamicPointcut"/>
+       </property>
+       <property name="advice">
+           <bean class="com.activity.aspect.GreetingBeforeAdvice"/>
+       </property>
+   </bean>
+   <bean id="waiter2" class="org.springframework.aop.framework.ProxyFactoryBean"
+         p:interceptorNames="dynamicAdvisor"
+         p:target-ref="waiterTarget"
+         p:proxyTargetClass="true"/>
+         
+         
+         
+<!--   6、流程切面        -->
+<!--    Spring的流程切面由DefaultPointcutAdvisor 和ControlFlowPointcut实现。流程切点代表由某个方法直接或间接发起调用的其他方法。 -->
+   <bean id="controlFlowPointcut" class="org.springframework.aop.support.ControlFlowPointcut">
+       <constructor-arg type="java.lang.Class" value="com.activity.aspect.WaiterDelegate"/>
+       <constructor-arg type="java.lang.String" value="service"/>
+   </bean>
+   <bean id="controlFlowAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+         p:pointcut-ref="controlFlowPointcut"
+         p:advice-ref="greetingAdvice"/>
+   <bean id="waiter3" class="org.springframework.aop.framework.ProxyFactoryBean"
+         p:interceptorNames="controlFlowAdvisor"
+         p:target-ref="waiterTarget"
+         p:proxyTargetClass="true"/> 
+         
+         
+<!--   7  配置复合切点切面      -->
+<!--   假设我们希望由WaiterDelegate#service()发起调用且被调用的方法是Waiter#greetTo()时才织入增，。 -->
+<!--   这个切点就是复合切点，因为它是由两个单独的切点共同确定。ComposablePointcut 可以将多个切点以并集或交集的方式组合起来，提供了切点之间复合运算的功能。 -->
+  <bean id="gcp" class="com.activity.aspect.GreetingComposablePointcut"/>
+  <bean id="composableAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+        p:pointcut="#{gcp.intersectionPointcut}"
+        p:advice-ref="greetingAdvice"/>
+  <bean id="waiter4" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interceptorNames="composableAdvisor"
+        p:target-ref="waiterTarget"
+        p:proxyTargetClass="true"/>      
+         
+            
+            
+            
+<!--     8、引介切面 -->
+<!--   引介切面是引介增强的封装器，通过引介切面，我们更容易为现有对象添加任何接口的实现。 -->
+<!-- <bean id="introduceAdvisor" -->
+<!--           class="org.springframework.aop.support.DefaultIntroductionAdvisor"> -->
+<!--         <constructor-arg> -->
+<!--             <bean class="com.yyq.advice.ControllablePerformanceMonitor" /> -->
+<!--         </constructor-arg> -->
+<!--     </bean> -->
+<!--     <bean id="forumServiceTarget" class="com.yyq.advice.ForumService" /> -->
+<!--     <bean id="forumService" class="org.springframework.aop.framework.ProxyFactoryBean" -->
+<!--           p:interceptorNames="introduceAdvisor" -->
+<!--           p:target-ref="forumServiceTarget" -->
+<!--           p:proxyTargetClass="true"/> -->
+</beans>

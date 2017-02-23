@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="device=device-width,initoal-scale=1">
+<title>商品列表</title>
+<link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css" type="text/css"></link>
+<script type="text/javascript" src="../../bootstrap/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../bootstrap/js/fileinput.js"></script>
+<script type="text/javascript" src="../../bootstrap/js/fileinput.min.js"></script>
+<iframe id="frame_content" src="nav.html" scrolling="no" frameborder="0"  width="100%" height="50px"></iframe> 
+</head>
+<script type="text/javascript">
+	var param;
+	function  GetRequest() {
+	    var url = decodeURI(location.search);
+	    var theRequest = new Object();
+	    var serarch="{";
+	    if (url.indexOf("?") != -1) {
+	        var str = url.substr(1);
+	        var strs= new Array();
+	         strs = str.split('&');
+	         for (var i = 0; i < strs.length; i++) {
+	        	 var strParam= new Array();
+		         strParam =strs[i].split('=');
+		       	 var key=strParam[0];
+	        	 var value=strParam[1];
+	        	 serarch+=key+":"+"'"+value+"',";
+			 }
+	         //去除最后一个，号
+	        serarch=serarch.substring(0, serarch.length-1);
+	        serarch+="}";
+	 	    param= eval("("+serarch+")");
+	    }
+	   
+	}
+
+	
+
+ 		$(function(){
+ 			
+ 			$("#inputMainFile").fileinput({
+// 				uploadUrl: null,
+ 		        showUpload: true,
+ 		        maxFileCount: 1,
+ 		        allowedFileExtensions : ['jpg', 'png','gif'],//接收的文件后缀
+ 		        mainClass: "input-group-lg"
+ 		    });
+ 			
+ 			
+ 			$("#inputFile").fileinput({
+ 				showUpload: true,
+ 		        maxFileCount: 99,
+ 		        allowedFileExtensions : ['jpg', 'png','gif'],//接收的文件后缀
+ 		        mainClass: "input-group-lg"
+
+ 		    });
+ 			
+ 			//3级类目取得
+ 		   $.ajax({
+ 			   url: "/activity/goods/getTypeSingle",
+ 			   type: "get",
+ 			   dataType: "json",
+ 			   data : {
+ 				   level:3
+ 				},
+ 			   success: function(data){
+ 				  
+ 				   var thirdType="";
+ 				   for (var i = 0; i < data.data.length; i++) {
+ 					  thirdType +='<option value="'+data.data[i].id+'">'+data.data[i].levelName+'</option>'
+ 				   }
+ 				   $('#typeId').html(thirdType);
+ 				}
+ 			 });
+ 			
+ 			
+ 			  //商品提交 
+ 			  $("#addGoods").click(function(){
+ 				
+ 	 			   $.ajax({
+ 	 				   url: "/activity/goods/addGoods",
+ 	 				   type: "post",
+ 	 				   dataType: "json",
+ 	 				   data:$('#myForm').serialize(),
+ 	 				   success: function(data){
+ 	 					 $('#myModal').modal('show');
+ 	 					},
+ 	 				 });
+ 	 		
+	 	 			
+ 				});
+ 			  
+ 			
+			   
+ 		});
+//  		返回主页
+ 		function mainPage(){
+ 			window.location.href="/";
+ 		}
+//  		继续新增商品
+ 		function addGoods(){
+ 			window.location.href="goodsAdd.html";
+ 		}
+ 		
+	   
+	   </script>
+<body style="background-color: white">
+		<div class="container" style="padding: 50px; background-color: #fff;margin-top: -5px;">
+
+				<form id="myForm" role="form" >
+				
+
+				  <div class="form-group">
+				    <label for="goodsName">商品名称</label>
+				    <input type="text" name="goodsName" class="form-control" id="goodsName" placeholder="请输入商品名">
+				  </div>
+				  <div class="form-group">
+				    <label for="goodsDescription">商品类目</label>
+				    <select id="typeId" name="typeId" class="form-control">
+				        <!--	 动态加载   <option value="">name</option> -->
+				    </select>
+				  </div>
+				  
+				  <div class="form-group">
+				    <label for="goodsDescription">商品描述</label>
+				    <input type="text" name="goodsDescription" class="form-control" id="goodsDescription" placeholder="请输入商品描述">
+				  </div>
+				  <div class="form-group">
+				    <label for="price">商品价格</label>
+				    <input type="text" name="price" class="form-control" id="price" placeholder="请输入商品价格">
+				  </div>
+				  <div class="form-group">
+				    <label for="inventory">商品库存</label>
+				    <input type="text" name="inventory" class="form-control" id="inventory" placeholder="请输入商品库存"> 
+				  </div>
+				  <div class="form-group">
+				    <label for="unit">库存单位</label>
+				    <input type="text" name="unit" class="form-control" id="unit" placeholder="请输入库存单位"> 
+				  </div>
+<!-- 				  <div class="form-group"> -->
+<!-- 				  	  <label for="goodsStatus">是否上线</label> -->
+<!-- 					  <div class="checkbox"> -->
+<!-- 					   <input type="checkbox" id="goodsStatus" name="goodsStatus" value="0"> 注：是否直接上线 勾选为确定上线 -->
+<!-- 					  </div> -->
+<!-- 				   </div> -->
+				   <div class="form-group">
+				    <label for="goodsStatus">是否上线</label>
+				    <select id="goodsStatus" name="goodsStatus" class="form-control">
+				         <option value="0">是</option>
+				         <option value="1">否</option>
+				    </select>
+				  </div>
+				  <div class="form-group">
+				    <label for="goodsProperty">商品属性</label>
+				    <textarea rows="3" cols="30" id="goodsProperty"  name="goodsProperty" class="form-control Uneditable-textarea" placeholder="请输入商品属性：格式为属性名：属性值  并用，隔开  例  容量:500ml,产地:北京 "></textarea>
+				    <p class="help-block">请输入商品属性：格式为(属性名：属性值 ) 并用，隔开  例  容量:500ml,产地:北京 。</p>
+				  </div>
+				  <div class="form-group">
+				    <label  class="control-label" for="inputMainFile"></label>
+				    <input type="file" id="inputMainFile" name="goodsMainPicUrl">
+				    <p class="help-block">请上传商品主图。</p>
+				  </div>
+				  <div class="form-group">
+				    <label class="control-label" for="inputFile"></label>
+				    <input type="file" name="goodsPicUrl" id="inputFile" multiple class="file-loading" />
+				    <p class="help-block">请上传商品附图（最多6个）。</p>
+				  </div>
+				  <div class="text-center">
+				  <button id="addGoods" type="button" class="btn btn-success  btn-lg">新增商品</button>
+				  </div>
+				</form>
+		</div>
+			
+		<!-- 模态框（Modal） -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="myModalLabel">
+							新增商品成功！
+						</h4>
+					</div>
+					<div class="modal-body">
+						新增商品成功！
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" onclick="mainPage()">返回主页
+						</button>
+						<button type="button" class="btn btn-primary" onclick="addGoods()">
+							继续新增商品？
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal -->
+		</div>
+	  
+	
+</body>
+</html>

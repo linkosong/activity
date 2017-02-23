@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" charset="utf-8"  content="device=device-width,initoal-scale=1">
+		<title>首页</title>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css"></link>
+		<script type="text/javascript" src="bootstrap/js/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<!-- 		<script type="text/javascript" src="js/index.js"></script> -->
+	</head>
+		<script type="text/javascript">
+	      
+	      
+	   $(function(){
+		   //热卖商品
+		   $.ajax({
+			   url: "/activity/index/gethotGoods",
+			   type: "get",
+			   dataType: "json",
+			   data : {
+				},
+			   success: function(data){
+				   var hotGoods="";
+				   for (var i = 0; i < data.data.length; i++) {
+					   hotGoods += '<div class="col-md-4 col-sm-6 col-xs-4">'
+					    +'<a href="#" class="thumbnail" onclick="goodsDetailsShow('+data.data[i].goodsId+')">'
+					    +'<img class="img-responsive img-rounded" src="'+data.data[i].goodsMainPicUrl+'">'
+					   
+					    +'<h3>'+data.data[i].goodsName+'"</h3>'
+					    +'<input type="hidden" value="'+data.data[i].goodsId+'"/>'
+					    +'</a>'
+					    +'</div>';
+				   }
+				   $('#hotGoods').html(hotGoods);
+				}
+			 });
+		   //轮播图
+		   $.ajax({
+			   url: "/activity/index/getFlashView",
+			   type: "get",
+			   dataType: "json",
+			   data : {
+				},
+			   success: function(data){
+				 	//轮播图
+				   var carouselIndicators=""; 
+				   var carouselInner=""; 
+				   for (var i = 0; i < data.data.length; i++) {
+					   
+					   if(i==0){
+						   carouselIndicators+= '<li data-target="#myCarousel" data-slide-to="'+i+'" class="active"></li>'   
+					   }else{
+						   carouselIndicators+='<li data-target="#myCarousel" data-slide-to="'+i+'"></li>'
+					   }
+					   
+					   if(i==0){
+						   carouselInner+= '<div class="item active">'
+						   				+'<img src="'+data.data[i].viewDownUrl+'" style="height: 300px; width:100%;">'
+						   				+'</div>'
+					   }else{
+						   carouselInner+= '<div class="item">'
+				   				+'<img src="'+data.data[i].viewDownUrl+'" style="height: 300px; width:100%;">'
+				   				+'</div>'
+					   }
+				   }
+				   //轮播图
+				   $('.carousel-indicators').html(carouselIndicators);
+				   $('.carousel-inner').html(carouselInner);
+				}
+			 });
+		   
+		   //取得所有商品类型
+		  $.ajax({
+				url : "/activity/index/getTypeAll",
+				type : "post",
+				dataType : "json",
+				data : {
+					level : 1
+				},
+				success : function(data) {
+					console.log(data)
+					var liLevel="";
+					var tabpanelDiv="";
+					var tabpanelDiv1="";
+					for (var i = 0; i < data.data.length; i++) {
+						if(data.data[i].level==1){
+							liLevel +='<li class="text-center" role="presentation" style="background:green; height:50%; width:100%;">'+'<a href="#" data-toggle="tab"   style="height:100%;line-height: 130px;">'+data.data[i].levelName+'</a>'+'</li>';
+							tabpanelDiv+='<div  role="tabpanel" class="tab-pane" id="tab'+(i+1)+'" style="background-color: #fff;height:300px;width:100%;">'	
+							  			+'<div class="container-fluid"><div class="row">level2</div></div></div>';
+							  			//二级菜单#tab'+(i+1)+'
+										var level2Name="";
+										for (var j = 0; j < data.data.length; j++) {
+											if(data.data[j].level==2 && data.data[j].pid==data.data[i].id){
+												
+												level2Name+='<div class="col-md-6 col-sm-6 col-xs-6" >'
+													+'<ul class="list-unstyled">'
+														            +'<li><div  class="text-center"><a href="#">'+data.data[j].levelName+'</a></div></li>'
+														            +'<li class="divider"></li>'
+														            +'<li>level3</li>'
+													          	+'</ul>'
+													          	+'</div>';
+												  			
+												  			 			
+												//三级菜单
+												var level3Name='<ul class="list-unstyled list-inline">';
+												for (var k = 0; k < data.data.length; k++) {		
+													if(data.data[k].level==3 && data.data[k].pid==data.data[j].id){
+														level3Name += '<li><a onclick="goodsListShow('+data.data[k].id+')">'+data.data[k].levelName+'</a></li>';
+													}
+												}
+												console.log("3333"+level3Name);
+												level2Name=level2Name.replace('level3',level3Name); 			
+												
+											}
+										}	
+										tabpanelDiv=tabpanelDiv.replace('level2',level2Name);
+						}
+					}
+					$('#myTab').html(liLevel);
+					$('.tab-content').html(tabpanelDiv);
+					
+				},
+				error : function(data) {
+					console.log(data)
+					alert( "Data Saved1: " + data.msg);
+				}
+			});
+		 
+		    
+		 
+	   })
+	   
+	      
+		function goodsListShow(typeId){
+			 window.location.href="html/goodsList.html?typeId="+typeId;
+		}
+	   
+	   function goodsDetailsShow(goodsId){
+			 window.location.href="html/goodsDetails.html?goodsId="+goodsId;
+	   }
+	       
+
+		</script>
+	<body style="padding 0px;background:url(image/star.jpg);" >
+
+<!-- 	navbar-fixed-top -->
+		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
+		  <div class="container">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/">首页</a>
+		      <p class="navbar-text">欢迎光临！</p>
+		    </div>
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav navbar-left">
+		        <li class="active"><a href="#">新品上市</a></li>
+		        <li><a href="#">关于我们</a></li>
+<!-- 		        <li><a href="html/goodsAdd.html">商品新增</a></li> -->
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">后台管理 <span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+		            <li><a href="html/goodsAdd.html">商品新增</a></li>
+		            <li class="divider"></li>
+		            <li><a href="html/goodsTypeManager.html">商品类目管理</a></li>
+		          </ul>
+		        </li> 
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">帮助中心 <span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+		            <li><a href="#">联系我们</a></li>
+		            <li class="divider"></li>
+		            <li><a href="#">新闻资讯</a></li>
+		          </ul>
+		        </li> 
+		      </ul>
+		      <form class="navbar-form navbar-right" role="search" action="html/goodsList.html">
+		        <div class="form-group">
+		          <input id="searchGoods" type="text" class="form-control" placeholder="搜索" name="goodsName">
+		        </div>
+		        <button type="submit" class="btn btn-default">搜索</button>
+		      </form>
+<!-- 		      <ul class="nav navbar-nav navbar-right"> -->
+<!-- 		        <li><a href="#">Link</a></li> -->
+<!-- 		        <li class="dropdown"> -->
+<!-- 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a> -->
+<!-- 		          <ul class="dropdown-menu" role="menu"> -->
+<!-- 		            <li><a href="#">Action</a></li> -->
+<!-- 		            <li><a href="#">Another action</a></li> -->
+<!-- 		            <li><a href="#">Something else here</a></li> -->
+<!-- 		            <li class="divider"></li> -->
+<!-- 		            <li><a href="#">Separated link</a></li> -->
+<!-- 		          </ul> -->
+<!-- 		        </li> -->
+<!-- 		      </ul> -->
+		    </div><!-- /.navbar-collapse -->
+ 		  </div><!--/.container-fluid -->
+		</nav>
+        
+		<div class="container-fluid" style="padding-top:50px;"> 
+		<div class="row" style="position:relative;">
+			<div class="col-md-2 col-sm-2 col-xs-2" style="height:300px;">
+<!-- 					<ul id="myTab" class="nav nav-pills nav-stacked" role="tablist" style="height:300px;width:100%;"> -->
+					<ul id="myTab" class="nav" role="tablist" style="height:300px;width:100%;">
+<!-- 	动态加载			   <li  role="presentation" style="background:green; height:50%; width:100%;"><a href="#tab2" data-toggle="tab"   style="height:100%;"></a></li> -->
+				    </ul>
+			</div>
+ 				<div class="tab-content" style="width:300px;position:absolute;top:0;left:15.35%;z-index:10;"> 
+<!-- 	动态加载			  <div role="tabpanel" class="tab-pane" id="tab1" style="background-color: #fff;height:400px;width:100%;">	 -->
+<!-- 			  			<div class="col-md-4 col-sm-4 col-xs-4" style="background:yellow;height:400px;width:100%"> -->
+			  						
+<!-- 			  			</div> -->
+<!-- 				  </div> -->
+ 				</div>	 
+			<div class="col-md-10 col-sm-10 col-xs-10 " style="height:300px;background-image:image/star.jpg">
+				<div id="myCarousel" class="carousel slide"  style="height: 300px;margin: auto;">
+				    <!-- 轮播（Carousel）指标 -->
+				    <ol class="carousel-indicators">
+<!-- 	active	 -->
+				    </ol>   
+				    <!-- 轮播（Carousel）项目 -->
+				    <div class="carousel-inner">
+<!-- 	active	 -->
+				    </div>
+				    <!-- 轮播（Carousel）导航 -->
+				    <a class="carousel-control left" href="#myCarousel" 
+				        data-slide="prev">&lsaquo;
+				    </a>
+				    <a class="carousel-control right" href="#myCarousel" 
+				        data-slide="next">&rsaquo;
+				    </a>
+				</div>
+			
+			</div>
+			
+		</div>
+		
+		<div class="jumbotron" style="margin-left: 0px;margin-right: 0px;margin-bottom: 0px;">
+				<h2 class="text-center">关于我们</h2>
+				<h4>  动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载
+				动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载
+				动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载
+				动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载</h4>
+				
+				
+		</div>
+		<h1 class="text-center" style="color: deeppink;">------------------------------热卖商品------------------------------</h1>
+		
+		<div id="hotGoods" class="row" style="padding:50px;">
+<!-- 	动态加载-->
+<!-- 				<div class="col-md-4 col-sm-6 col-xs-4" style="border:1px solid red;height:300px"> 
+<!-- 						 <a href="#" class="thumbnail"> -->
+<!-- 					      <img data-src="holder.js/100%x180" alt="..."> -->
+<!-- 					    </a> -->
+<!-- 				</div> -->
+
+		</div>
+	</div>
+	<script>
+		$(function(){
+			 
+			 /* 首页左侧选项卡开始 */
+			  $("#myTab").delegate("li","click",function(e){
+				  //取消事件冒泡
+				  e.stopPropagation();
+				  $(".tab-pane").hide();
+				  $(".tab-pane").eq($(this).index()).show();
+			  })
+			    
+	 			  $('.tab-pane').click(function(e){
+	                 e.stopPropagation();
+	                 return;
+	             })
+	             $(document).click(function (e) {
+	                e.stopPropagation();
+	                 $('.tab-pane').hide();
+	             }); 
+			  /* 首页左侧选项卡结束 */
+			  
+		})
+	</script>
+	</body>
+</html>

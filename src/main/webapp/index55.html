@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" charset="utf-8"  content="device=device-width,initoal-scale=1">
+		<title>首页</title>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css"></link>
+		<script type="text/javascript" src="bootstrap/js/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<!-- 		<script type="text/javascript" src="js/index.js"></script> -->
+	</head>
+		<script type="text/javascript">
+	      
+	      
+	   $(function(){
+		   $.ajax({
+			   url: "/activity/index/gethotGoods",
+			   type: "get",
+			   dataType: "json",
+			   data : {
+				},
+			   success: function(data){
+				   var hotGoods="";
+				   for (var i = 0; i < data.data.length; i++) {
+					   hotGoods += '<div class="col-md-4 col-sm-6 col-xs-4">'
+					    +'<a href="#" class="thumbnail">'
+					    +'<img class="img-responsive img-rounded" src="'+data.data[i].goodsMainPicUrl+'">'
+					    +'</a>'
+					    +'<h3>'+data.data[i].goodsName+'"</h3>'
+					    +'<input type="hidden" value="'+data.data[i].goodsId+'"/>'
+					    +'</div>';
+				   }
+				   $('#hotGoods').html(hotGoods);
+				}
+			 });
+		   
+		   
+		  $.ajax({
+				url : "/activity/index/getTypeAll",
+				type : "post",
+				dataType : "json",
+				data : {
+					level : 1
+				},
+				success : function(data) {
+					console.log(data)
+					var liLevel="";
+					var tabpanelDiv="";
+					var tabpanelDiv1="";
+					for (var i = 0; i < data.data.length; i++) {
+						if(data.data[i].level==1){
+							liLevel +='<li  role="presentation" style="background:green; height:50%; width:100%;">'+'<a href="#tab'+(i+1)+'" data-toggle="tab"   style="height:100%;">'+data.data[i].levelName+'</a>'+'</li>';
+							tabpanelDiv+='<div  role="tabpanel" class="tab-pane" id="tab'+(i+1)+'" style="background-color: #fff;height:300px;width:100%;">'	
+							  			+'<div class="container-fluid"><div class="row">level2</div></div></div>';
+							  			//二级菜单
+										var level2Name="";
+										for (var j = 0; j < data.data.length; j++) {
+											if(data.data[j].level==2 && data.data[j].pid==data.data[i].id){
+												
+												level2Name+='<div class="col-md-6 col-sm-6 col-xs-6" >'
+													+'<ul class="list-unstyled">'
+														            +'<li><div  class="text-center"><a href="#">'+data.data[j].levelName+'</a></div></li>'
+														            +'<li class="divider"></li>'
+														            +'<li>level3</li>'
+													          	+'</ul>'
+													          	+'</div>';
+												  			
+												  			 			
+												//三级菜单
+												var level3Name='<ul class="list-unstyled list-inline">';
+												for (var k = 0; k < data.data.length; k++) {		
+													if(data.data[k].level==3 && data.data[k].pid==data.data[j].id){
+														level3Name += '<li><a onclick="goodsListShow('+data.data[k].id+')">'+data.data[k].levelName+'</a></li>';
+													}
+												}
+												console.log("3333"+level3Name);
+												level2Name=level2Name.replace('level3',level3Name); 			
+												
+											}
+										}	
+										tabpanelDiv=tabpanelDiv.replace('level2',level2Name);
+						}
+					}
+					$('#myTab').html(liLevel);
+					$('.tab-content').html(tabpanelDiv);
+					
+				},
+				error : function(data) {
+					console.log(data)
+					alert( "Data Saved1: " + data.msg);
+				}
+			});
+		   
+	
+		   
+		   
+		   
+		    $('#myTab li').each(function(index){
+			   $(this).click(function(){
+				   $(".tab-pane").hide();
+				   $(".tab-pane").eq(index).show();
+			   })
+		 	 }); 
+		    
+		    
+// 		   $(document).click(function(){
+// 				 $(".tab-pane").hide();
+// 		   }
+		    
+		 
+	   })
+	   
+	      
+		function goodsListShow(id){
+			 
+			 windows.location.href=decodeURI(encodedURI)
+		 }
+	       
+
+		</script>
+<!-- æ æ ¼ç³»ç» -->
+	<body style="background-color: pink; padding 0px;">
+
+<!-- 	navbar-fixed-top -->
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		  <div class="container">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">首页</a>
+		      <p class="navbar-text">欢迎光临！</p>
+		    </div>
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav navbar-left">
+		        <li class="active"><a href="#">新品上市</a></li>
+		        <li><a href="#">关于我们</a></li>
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">帮助中心 <span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+		            <li><a href="#">联系我们</a></li>
+		            <li class="divider"></li>
+		            <li><a href="#">新闻资讯</a></li>
+		          </ul>
+		          <li><a href="#">图片</a></li>
+		      </ul>
+		<!--       <form class="navbar-form navbar-left" role="search"> -->
+		<!--         <div class="form-group"> -->
+		<!--           <input type="text" class="form-control" placeholder="Search"> -->
+		<!--         </div> -->
+		<!--         <button type="submit" class="btn btn-default">Submit</button> -->
+		<!--       </form> -->
+		<!--       <ul class="nav navbar-nav navbar-right"> -->
+		<!--         <li><a href="#">Link</a></li> -->
+		<!--         <li class="dropdown"> -->
+		<!--           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a> -->
+		<!--           <ul class="dropdown-menu" role="menu"> -->
+		<!--             <li><a href="#">Action</a></li> -->
+		<!--             <li><a href="#">Another action</a></li> -->
+		<!--             <li><a href="#">Something else here</a></li> -->
+		<!--             <li class="divider"></li> -->
+		<!--             <li><a href="#">Separated link</a></li> -->
+		<!--           </ul> -->
+		<!--         </li> -->
+		<!--       </ul> -->
+		    </div><!-- /.navbar-collapse -->
+ 		  </div><!--/.container-fluid -->
+		</nav>
+
+		<div class="container-fluid" style="padding-top:50px;"> <!-- container : è¡¨ç¤ºçæ¯æå­æåå®¹å°è¾¹æ¡çèªå¨è°æ´       -->
+		<div class="row" style="position:relative;">
+			<div class="col-md-2 col-sm-2 col-xs-2" style="height:300px;">
+					<ul id="myTab" class="nav nav-pills nav-stacked" role="tablist" style="height:300px;width:100%;">
+<!-- 	动态加载			   <li  role="presentation" style="background:green; height:50%; width:100%;"><a href="#tab2" data-toggle="tab"   style="height:100%;">å¯é£</a></li> -->
+				    </ul>
+			</div>
+			<!-- Tab panes js å®ç° -->
+ 				<div class="tab-content" style="width:300px;position:absolute;top:0;left:300px;z-index:10;"> 
+<!-- 	动态加载			  <div role="tabpanel" class="tab-pane" id="tab1" style="background-color: #fff;height:400px;width:100%;">	 -->
+<!-- 			  			<div class="col-md-4 col-sm-4 col-xs-4" style="background:yellow;height:400px;width:100%"> -->
+			  						
+<!-- 			  			</div> -->
+<!-- 				  </div> -->
+ 				</div>	 
+			<div class="col-md-10 col-sm-10 col-xs-10 " style="height:300px;background-image:image/star.jpg">
+			</div>
+			
+		</div>
+		
+		<div class="jumbotron" style="margin-left: 0px;margin-right: 0px;margin-bottom: 0px;">
+				<h2 class="text-center">关于我们</h2>
+				<h4>  动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载
+				动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载
+				动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载
+				动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载动态加载</h4>
+				
+				
+		</div>
+		<h1 class="text-center">热卖商品</h1>
+		
+		<div id="hotGoods" class="row" style="padding:50px;">
+<!-- 	动态加载-->
+<!-- 				<div class="col-md-4 col-sm-6 col-xs-4" style="border:1px solid red;height:300px"> 
+<!-- 						 <a href="#" class="thumbnail"> -->
+<!-- 					      <img data-src="holder.js/100%x180" alt="..."> -->
+<!-- 					    </a> -->
+<!-- 				</div> -->
+
+		</div>
+	</div>
+	</body>
+</html>

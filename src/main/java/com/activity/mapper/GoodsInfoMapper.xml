@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.activity.mapper.GoodsInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.activity.pojo.GoodsInfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="type_id" property="typeId" jdbcType="BIGINT" />
+    <result column="goods_id" property="goodsId" jdbcType="VARCHAR" />
+    <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="goods_description" property="goodsDescription" jdbcType="VARCHAR" />
+    <result column="sale_num" property="saleNum" jdbcType="BIGINT" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="inventory" property="inventory" jdbcType="BIGINT" />
+    <result column="unit" property="unit" jdbcType="VARCHAR" />
+    <result column="goods_status" property="goodsStatus" jdbcType="INTEGER" />
+    <result column="goods_property" property="goodsProperty" jdbcType="VARCHAR" />
+    <result column="goods_main_pic_url" property="goodsMainPicUrl" jdbcType="VARCHAR" />
+    <result column="goods_pic_url" property="goodsPicUrl" jdbcType="VARCHAR" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+   type_id, goods_id, goods_name,goods_description,sale_num, price,inventory,unit,goods_status,goods_property, 
+   goods_main_pic_url, goods_pic_url,edit_time
+  </sql>
+<!--   添加商品 -->
+  <insert id="insert"  parameterType="com.activity.pojo.GoodsInfo">
+  insert into goods_info 
+  (<include refid="Base_Column_List"></include>)
+  values
+  (#{typeId},#{goodsId},#{goodsName},#{goodsDescription},#{saleNum},#{price},#{inventory},#{unit},#{goodsStatus},#{goodsProperty},
+  #{goodsMainPicUrl},#{goodsPicUrl},#{editTime})
+  </insert>
+  
+  <!--   查看商品详情 -->
+  <select id="getGoodsList" parameterType="com.activity.form.SearchForm" resultMap="BaseResultMap">
+  	SELECT
+	  	info.type_id,
+	  	info.goods_id,
+	  	info.goods_name,
+	  	info.goods_description,
+	  	info.sale_num, 
+	  	info.price,
+	  	info.inventory,
+	  	info.unit,
+	  	info.goods_status,
+	  	info.goods_property, 
+	  	info.goods_main_pic_url,
+	  	info.goods_pic_url,
+	  	info.edit_time
+	from 
+		goods_info info
+		INNER JOIN goods_type type1
+		on info.type_id = type1.id
+		INNER JOIN goods_type type2
+		on type1.pid=type2.id
+	<where>
+		<!--0:下架1:上架 -->
+		info.goods_status = '1'
+		<if test="id != null and id != ''">
+			and type2.id=#{id}
+		</if>
+		<if test="typeId != null and typeId != ''">
+			and info.type_id=#{typeId}
+		</if>
+		<if test="goodsName != null and goodsName != ''">
+			and info.goods_name like '%${goodsName}%'
+		</if>
+	</where>
+  </select>
+  
+  
+  
+<!--   查看商品详情 -->
+  <select id="getGoodsDetails" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"></include>
+  	from goods_info
+  	where goods_id=#{goodsId}
+  </select>
+  
+<!--   更新商品信息 -->
+  <update id="updateByGoodsId" parameterType="com.activity.pojo.GoodsInfo" >
+    update goods_info
+    set type_id = #{typeId},
+      goods_id = #{goodsId},
+      goods_name = #{goodsName},
+      goods_description = #{goodsDescription},
+      sale_num = #{saleNum},
+      price = #{price},
+      inventory = #{inventory},
+      unit = #{unit},
+      goods_status = #{goodsStatus},
+      goods_property = #{goodsProperty},
+      goods_main_pic_url = #{goodsMainPicUrl},
+      goods_pic_url = #{goodsPicUrl},
+      edit_time = #{editTime}
+    where id = #{id}
+  </update>
+  
+<!--   上架或下架 -->
+  <update id="changeGoodsStatus" parameterType="com.activity.pojo.GoodsInfo" >
+    update goods_info
+    set goods_status = #{goodsStatus}
+    where goods_id = #{goodsId}
+  </update>
+  
+  <!--   查看热门商品 -->
+  <select id="getHotGoods"  resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"></include>
+  	from goods_info
+  	where goods_status = '1'
+  	order by sale_num desc
+  	limit 0,20 
+  </select>
+  
+</mapper>

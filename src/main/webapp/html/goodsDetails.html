@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="device=device-width,initoal-scale=1">
+<title>商品详情</title>
+<link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css" type="text/css"></link>
+<script type="text/javascript" src="../../bootstrap/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../bootstrap/js/bootstrap.min.js"></script>
+<iframe id="frame_content" src="nav.html" scrolling="no" frameborder="0"  width="100%" height="50px"></iframe> 
+</head>
+<script type="text/javascript">
+	var param;
+	function  GetRequest() {
+	    var url = decodeURI(location.search);
+	    var theRequest = new Object();
+	    var serarch="{";
+	    if (url.indexOf("?") != -1) {
+	        var str = url.substr(1);
+	        var strs= new Array();
+	         strs = str.split('&');
+	         for (var i = 0; i < strs.length; i++) {
+	        	 var strParam= new Array();
+		         strParam =strs[i].split('=');
+		       	 var key=strParam[0];
+	        	 var value=strParam[1];
+	        	 serarch+=key+":"+"'"+value+"',";
+			 }
+	         //去除最后一个，号
+	        serarch=serarch.substring(0, serarch.length-1);
+	        serarch+="}";
+	 	    param= eval("("+serarch+")");
+	    }
+	   
+	}
+
+
+ 		$(function(){
+ 			GetRequest();
+ 			alert(param);
+			   $.ajax({
+				   url: "/activity/goods/getGoodsDetails",
+				 
+				   type: "post",
+				   dataType: "json",
+// 				   data : {
+// 					   id : id,
+// 					   typeId : typeId
+// 					},
+				   data:param,
+				   success: function(data){
+					    
+					   var goodsInfo=data.data;
+					   
+					   //属性
+					   var goodsProperty= goodsInfo.goodsProperty;
+					   var goodsPropertys= new Array();
+					   goodsPropertys = goodsProperty.split(',');
+// 				       var specification='<h3 class="text-left">商品规格：</h3>'; 
+				       var specification=''; 
+					   for (var i = 0; i < goodsPropertys.length; i++) {
+// 						   specification+=
+// 							   '<div class="col-md-4 col-sm-6 col-xs-4" style="height:50px">'
+// 							   +'<label class="control-label">'+goodsPropertys[i]+'</label>'
+// 							   +'</div>' ;
+							   
+							   if((i+1)%4==1){
+								   specification +='<tr>'
+							   }
+							   if((i+1)%4!=0){
+								   specification +='<th>'+goodsPropertys[i]+'</th>'
+							   }
+							   if((i+1)%4==0){
+								   specification +=  '</tr>'
+							   }
+					   }
+					   
+					   
+					   //图片 详情
+					   var goodsPicUrl= goodsInfo.goodsPicUrl;
+					   var goodsPicUrls= new Array();
+					   goodsPicUrls = goodsPicUrl.split(',');
+					   //轮播图
+					   var carouselIndicators=""; 
+					   var carouselInner=""; 
+					   
+				       var goodsDetails=
+// 				    	   '<h3>商品详情</h3>'; 
+				       '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1"><h3>商品详情</h3></div>';
+					   for (var i = 0; i < goodsPicUrls.length; i++) {
+						   goodsDetails += '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'
+							    +'<a href="#" class="thumbnail">'
+							    +'<img class="img-responsive img-rounded" src="'+goodsPicUrls[i]+'" style="width:100%;">'
+							    +'</a>'
+							    +'</div>';
+							    
+						   
+						   if(i==0){
+							   carouselIndicators+= '<li data-target="#myCarousel" data-slide-to="'+i+'" class="active"></li>'   
+						   }else{
+							   carouselIndicators+='<li data-target="#myCarousel" data-slide-to="'+i+'"></li>'
+						   }
+						   
+						   if(i==0){
+							   carouselInner+= '<div class="item active">'
+							   				+'<img src="'+goodsPicUrls[i]+'" style="height: 300px; width:100%;">'
+							   				+'</div>'
+						   }else{
+							   carouselInner+= '<div class="item">'
+					   				+'<img src="'+goodsPicUrls[i]+'">'
+					   				+'</div>'
+						   }
+					   }
+					   
+					   
+// 					   $('#specification').html(specification);		
+					   $('#specification').html(specification);		
+					   $('#goodsDetails').html(goodsDetails);
+					   //轮播图
+					   $('.carousel-indicators').html(carouselIndicators);
+					   $('.carousel-inner').html(carouselInner);
+					   
+					}
+				 });
+			   
+			   
+			  
+			   
+ 		});
+	   
+	   </script>
+<body style="background-color: pink">
+		<div class="container-fluid" style="padding: 50px; background-color: #fff;margin-top: -5px;">
+
+				<div id="myCarousel" class="carousel slide"  style="height: 300px;width:80%;margin: auto;">
+				    <!-- 轮播（Carousel）指标 -->
+				    <ol class="carousel-indicators">
+<!-- 	active			    <li data-target="#myCarousel" data-slide-to="0" class="active"></li> -->
+<!-- 				        <li data-target="#myCarousel" data-slide-to="1"></li> -->
+<!-- 				        <li data-target="#myCarousel" data-slide-to="2"></li> -->
+				    </ol>   
+				    <!-- 轮播（Carousel）项目 -->
+				    <div class="carousel-inner">
+<!-- 	active			    <div class="item active"> -->
+<!-- 				            <img src="/wp-content/uploads/2014/07/slide1.png" alt="First slide"> -->
+<!-- 				        </div> -->
+<!-- 				        <div class="item"> -->
+<!-- 				            <img src="/wp-content/uploads/2014/07/slide2.png" alt="Second slide"> -->
+<!-- 				        </div> -->
+<!-- 				        <div class="item"> -->
+<!-- 				            <img src="/wp-content/uploads/2014/07/slide3.png" alt="Third slide"> -->
+<!-- 				        </div> -->
+				    </div>
+				    <!-- 轮播（Carousel）导航 -->
+				    <a class="carousel-control left" href="#myCarousel" 
+				        data-slide="prev">&lsaquo;
+				    </a>
+				    <a class="carousel-control right" href="#myCarousel" 
+				        data-slide="next">&rsaquo;
+				    </a>
+				</div>
+<!-- 			<div id="specification" class="row" style="padding:50px;"> -->
+<!-- 					<div class="col-md-4 col-sm-6 col-xs-4" style="border:1px solid red;height:300px"> -->
+<!-- 					  <label class="control-label">Email</label> -->
+<!-- 					</div> -->
+<!-- 			</div> -->
+
+			<!-- 属性 -->
+			<div class="table-responsive table-bordered table-condensed"  style="width:80%;margin: auto;">
+			  
+			  <div class="view">
+				<table class="table"  contenteditable="true">
+				<tbody id="specification">
+				<thead>
+					<tr>
+					<th>商品属性</th>
+					</tr>
+				</thead>
+				</tbody>
+				</table>
+				</div>
+			  
+			</div>
+			
+			<div id="goodsDetails"  class="row" style="padding:50px;">
+			</div>
+			
+			
+
+		</div>
+	
+</body>
+</html>

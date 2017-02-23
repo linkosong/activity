@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="device=device-width,initoal-scale=1">
+<title>商品类目管理</title>
+<link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css" type="text/css"></link>
+<script type="text/javascript" src="../../bootstrap/js/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="../../bootstrap/js/bootstrap.min.js"></script>
+<iframe id="frame_content" src="nav.html" scrolling="no" frameborder="0"  width="100%" height="50px"></iframe> 
+</head>
+<script type="text/javascript">
+	var param;
+	function  GetRequest() {
+	    var url = decodeURI(location.search);
+	    var theRequest = new Object();
+	    var serarch="{";
+	    if (url.indexOf("?") != -1) {
+	        var str = url.substr(1);
+	        var strs= new Array();
+	         strs = str.split('&');
+	         for (var i = 0; i < strs.length; i++) {
+	        	 var strParam= new Array();
+		         strParam =strs[i].split('=');
+		       	 var key=strParam[0];
+	        	 var value=strParam[1];
+	        	 serarch+=key+":"+"'"+value+"',";
+			 }
+	         //去除最后一个，号
+	        serarch=serarch.substring(0, serarch.length-1);
+	        serarch+="}";
+	 	    param= eval("("+serarch+")");
+	    }
+	   
+	}
+	
+	$(function(){
+			GetRequest();
+			getTypeSingle(null,1);
+		});
+	
+	
+	
+	function getTypeSingle(pid,level){
+		$.ajax({
+			   url: "/activity/goods/getTypeSingle",
+			   type: "post",
+			   dataType: "json",
+			   data : {
+				   pid : pid,
+				   level : level
+				},
+			   success: function(data){
+				   var typeList="";
+				   console.log(data);
+				    if(data.status==201){
+				    	typeList += '没有相关类目， 请重新搜索！';
+				    }else{
+					   var typeList='<ul class="list-group">'
+					   				+'<li class="list-group-item">'
+					   				+'<a class="btn btn-success text-center" onclick="addType('+pid+','+level+')">新增类目</a>'
+					   				+'</li>';
+					   for (var i = 0; i < data.data.length; i++) {
+						 		var   levelN = Number(data.data[i].level) + Number(1);
+							   typeList += '<li class="list-group-item">'
+								      +'<a onclick="getTypeSingle('+data.data[i].id+','+levelN+')">'+data.data[i].levelName+'</a>'   
+								      +'<span class="badge"><a class="btn" onclick="reduceType('+data.data[i].id+')">——</a></span>'
+								      +'<span class="badge"><a class="btn" onclick="editType('+data.data[i].id+')">编辑</a></span>'
+								      +'</li>';
+						   
+					   }
+					   typeList+='</ul>';
+						   if(level==1){
+							   $('#type1').html(typeList);
+						   }else if(level==2){
+							   console.log(typeList);
+							   $('#type2').html(typeList);
+						   }else if(level==3){
+							  $('#type3').html(typeList);
+						   }
+					   
+				    }
+				}
+			 });
+	}
+
+
+	
+	
+		function addType(pid,level){
+			alert(pid);
+			alert(level);
+			window.open('typeAdd.html?pid='+pid+'&level='+level, 'newwindow', 'height=600, width=800, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no') ;
+	 	}
+		
+		function reduceType(id){
+			alert(id);
+			$.ajax({
+				   url: "/activity/goods/delete",
+				   type: "post",
+				   dataType: "json",
+				   data:$('#myForm').serialize(),
+				   success: function(data){
+					 alert("新增类目成功！");
+					window.opener.location.reload(); 
+					window.close();
+					}
+			});
+	 	}
+ 		
+ 		function editType(id){
+			alert(id);
+	  	}
+	   
+	   </script>
+<body style="background-color: white">
+		<div class="container-fluid" style="padding: 50px; background-color: #fff;margin-top: -5px;">
+
+			<div id="typeList" class="row">
+			  <h3>商品类目编辑</h3>
+			</div>
+			<div id="typeList" class="row">
+			<!-- 		动态加载 -->
+
+				<div id="type1" class="col-md-4 col-sm-4 col-xs-4">
+					  <ul class="list-group">
+<!-- 	动态加载				<li class="list-group-item">Cras justo odio  -->
+<!-- 						  <span class="badge" style="background-image: png/glyphicons-191-plus-sign.png"><button class="btn">-</button></span> -->
+<!-- 						  <span class="badge" style="background-image: png/glyphicons-191-plus-sign.png"><button class="btn">编辑</button></span> -->
+<!-- 						  </li> -->
+<!-- 						<li class="list-group-item">Dapibus ac facilisis in</li> -->
+						</ul>
+						
+				</div>
+				<div id="type2" class="col-md-4 col-sm-4 col-xs-4" >
+				</div>
+				<div id="type3" class="col-md-4 col-sm-4 col-xs-4" >
+				</div>
+			</div>
+		</div>
+</body>
+</html>

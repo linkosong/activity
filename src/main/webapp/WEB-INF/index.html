@@ -1,0 +1,148 @@
+
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--  IE浏览器9.0全都支持 ，的核心配置意思是与bootstrap交融，正常使用  -->
+		<meta name="viewport" charset="utf-8"  content="device=device-width,initoal-scale=1"><!--  合适图框的大小，缩放的比例 ，支持pc端，移动端     -->
+		<title>Bootstrap基础入门</title>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css"></link>
+		<script type="text/javascript" src="bootstrap/js/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+	</head>
+		<script type="text/javascript">
+// 		 $(function () { 
+// 	       $('#myTab a:first').tab('hidden');//初始化显示哪个tab 
+// 	       $('#myTab a:last').tab('hidden');
+// 	      })
+	      
+	      
+	   $(function(){
+		   
+		  // alert(1)
+		    $('#myTab li').each(function(index){
+			 // alert(1)
+			   $(this).mouseover(function(){
+				 //  alert(index)
+				   $(".tab-pane").hide();
+				   $(".tab-pane").eq(index).show();
+			   }).mouseout(function(){
+				   $(".tab-pane").hide();
+			   })
+		   });  
+	   })
+	       
+      /* 
+	      	function fu(){
+	    	  alert(1)
+	    	  
+	      }
+		  */
+		 
+		</script>
+<!-- 栅格系统 -->
+	<body style="background-color: pink">
+<!-- 	navbar-fixed-top -->
+		<nav class="navbar navbar-default " role="navigation">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#">首页</a>
+		    </div>
+		
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li class="active"><a href="#">新品上市</a></li>
+		        <li><a href="#">关于我们</a></li>
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown">帮助中心 <span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+		            <li><a href="#">联系我们</a></li>
+		            <li class="divider"></li>
+		            <li><a href="#">新闻资讯</a></li>
+		          </ul>
+		          <li><a href="#">图片</a></li>
+		      </ul>
+		<!--       <form class="navbar-form navbar-left" role="search"> -->
+		<!--         <div class="form-group"> -->
+		<!--           <input type="text" class="form-control" placeholder="Search"> -->
+		<!--         </div> -->
+		<!--         <button type="submit" class="btn btn-default">Submit</button> -->
+		<!--       </form> -->
+		<!--       <ul class="nav navbar-nav navbar-right"> -->
+		<!--         <li><a href="#">Link</a></li> -->
+		<!--         <li class="dropdown"> -->
+		<!--           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a> -->
+		<!--           <ul class="dropdown-menu" role="menu"> -->
+		<!--             <li><a href="#">Action</a></li> -->
+		<!--             <li><a href="#">Another action</a></li> -->
+		<!--             <li><a href="#">Something else here</a></li> -->
+		<!--             <li class="divider"></li> -->
+		<!--             <li><a href="#">Separated link</a></li> -->
+		<!--           </ul> -->
+		<!--         </li> -->
+		<!--       </ul> -->
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+
+		<div class="container" style="background-color: #fff"> <!-- container : 表示的是文字或内容到边框的自动调整       -->
+		<div class="row">
+			<div class="col-md-2 col-sm-2 col-xs-2" style="background:yellow;height:300px;">
+					<ul id="myTab" class="nav nav-pills nav-stacked" role="tablist" style="background:red;height:300px;width:100%;">
+				       <li  role="presentation" style="background:pink; height:50%; width:100%;"><a href="#tab1"  data-toggle="tab"  style="height:100%;">饮品</a></li>
+				       <li  role="presentation" style="background:green; height:50%; width:100%;"><a href="#tab2" data-toggle="tab"   style="height:100%;">副食</a></li>
+				    </ul>
+			</div>
+			<!-- Tab panes -->
+				<div class="tab-content">
+				  <div role="tabpanel" class="tab-pane" id="tab1" style="background-color: #fff;height:400px;">	
+			  			<div class="col-md-4 col-sm-4 col-xs-4" style="background:yellow;height:400px;">
+			  			
+			  			</div>
+				  </div>
+				  <div role="tabpanel" class="tab-pane" id="tab2" style="">
+			  			<div class="col-md-4 col-sm-4 col-xs-4" style="background:green;height:400px;">
+			  			
+			  			</div>
+				  </div>
+				</div>	
+			<div class="col-md-10 col-sm-10 col-xs-10 " style="background:blue;height:300px">
+			</div>
+			
+		</div>
+		
+		<div class="jumbotron" style="margin-left: 50px;margin-right: 50px;margin-bottom: 0px;">
+				<h2 class="text-center">关于我们</h2>
+				<h4>  关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们
+				关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们
+				关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们
+				关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们
+				关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们
+				关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们关于我们
+				关于我们关于我们关于我们关于我们关于我们关于我们关于我们</h4>
+				
+				
+		</div>
+		
+		<div class="row" style="padding:50px;">
+				<div class="col-md-4 col-sm-3 col-xs-4" style="border:1px solid red;height:300px"> <!--  col-md-* :表示的是所适应的屏幕 
+				                                                                        col-后跟sm用于手机端， xs用于平板 ， md用于电脑 ，lg用于大屏幕  
+				                                                                                                                                                                                                                        默认的是一行十二列
+				                                                                     -->
+						 <a href="#" class="thumbnail">
+					      <img data-src="holder.js/100%x180" alt="...">
+					    </a>
+				</div>
+		</div>
+	</div>
+	</body>
+</html>
